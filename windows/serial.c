@@ -9,7 +9,7 @@ ser_fd_t ser_open( const char *devname, int baud )
 {
    ser_fd_t fd;
    DCB dcb;
-   COMMTIMEOUTS cto = { 0, 0, 0, 0, 0 };
+   COMMTIMEOUTS cto = { 1000, 0, 0, 0, 0 };
 
    memset( &dcb, 0, sizeof( dcb ) );
 
