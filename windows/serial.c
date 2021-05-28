@@ -44,7 +44,7 @@ ser_fd_t ser_open( const char *devname, int baud )
    
    if( fd != INVALID_HANDLE_VALUE )
    {
-      if (!BuildCommDCB("baud=38400 parity=n data=8 stop=1", &dcb))
+      if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &dcb))
         exiterror("building comm DCB" , 1);
       
       //if( SetCommMask( fd, 0) )
