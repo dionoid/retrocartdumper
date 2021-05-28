@@ -44,10 +44,15 @@ static ssize_t readhex( ser_fd_t serfd, unsigned char *buffer, ssize_t size )
 
    while( readsize < size )
    {
-      printf( "\r%04X", (int)readsize );
+      printf( "\r\n-mark1" );
+      printf( "\r\n%04X", (int)readsize );
       fflush( stdout );
+      printf( "\r\n-mark2" );
+      
+      ssize_t waa = ser_read( serfd, &tmp[0], 2 );
+      printf( "\r\n-mark3 waa=%zx",waa );
 
-      switch( ser_read( serfd, &tmp[0], 2 ) )
+      switch( waa )
       {
          case 0: /* eof */
             return readsize;
