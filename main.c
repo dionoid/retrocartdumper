@@ -169,7 +169,7 @@ int main( int argc, char *argv[] )
    }
 
    dumper( serfd, outfd );
-   peek( serfd, 0x1000 ); /* hack: turn off led on Teensy++ 2.0 */
+   //peek( serfd, 0x1000 ); /* hack: turn off led on Teensy++ 2.0 */
 
    ser_close( serfd );
    close( outfd );
