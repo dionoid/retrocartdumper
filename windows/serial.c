@@ -9,7 +9,7 @@ ser_fd_t ser_open( const char *devname, int baud )
 {
    ser_fd_t fd;
    DCB dcb;
-   COMMTIMEOUTS cto = { 100, 100, 100, 100, 100 };
+   COMMTIMEOUTS cto = { 0, 0, 0, 0, 0 };
 
    memset( &dcb, 0, sizeof( dcb ) );
 
@@ -44,8 +44,8 @@ ser_fd_t ser_open( const char *devname, int baud )
    
    if( fd != INVALID_HANDLE_VALUE )
    {
-      if( SetCommMask( fd, 0) )
-      {
+      //if( SetCommMask( fd, 0) )
+      //{
          if( SetCommTimeouts( fd, &cto) )
          {
             if( SetCommState( fd, &dcb) )
@@ -53,7 +53,7 @@ ser_fd_t ser_open( const char *devname, int baud )
                return fd;
             }
          }
-      }
+      //}
    }
 
    CloseHandle( fd );
