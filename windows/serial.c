@@ -9,7 +9,7 @@ ser_fd_t ser_open( const char *devname, int baud )
 {
    ser_fd_t fd;
    DCB dcb;
-   COMMTIMEOUTS cto = { 0, 0, 0, 0, 0 };
+   COMMTIMEOUTS cto = { 100, 100, 100, 100, 100 };
 
    memset( &dcb, 0, sizeof( dcb ) );
 
@@ -42,25 +42,22 @@ ser_fd_t ser_open( const char *devname, int baud )
    fd = CreateFile( devname, GENERIC_READ | GENERIC_WRITE,
                              0, NULL, OPEN_EXISTING, 0, NULL );
    
-   if( fd == INVALID_HANDLE_VALUE )
+   if( fd != INVALID_HANDLE_VALUE )
    {
-      CloseHandle( fd );
-      fd = INVALID_HANDLE_VALUE;
-   }
-
-   if( SetCommMask( fd, 0) )
-   {
-      if( SetCommTimeouts( fd, &cto) )
+      if( SetCommMask( fd, 0) )
       {
-         if( SetCommState( fd, &dcb) )
+         if( SetCommTimeouts( fd, &cto) )
          {
-            return fd;
+            if( SetCommState( fd, &dcb) )
+            {
+               return fd;
+            }
          }
       }
    }
 
    CloseHandle( fd );
-   fd = INVALID_HANDLE_VALUE;
+   exiterror(  "cannot open connection to COM port", 1 );
 }
 
 
