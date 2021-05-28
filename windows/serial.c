@@ -41,6 +41,12 @@ ser_fd_t ser_open( const char *devname, int baud )
 
    fd = CreateFile( devname, GENERIC_READ | GENERIC_WRITE,
                              0, NULL, OPEN_EXISTING, 0, NULL );
+   
+   if( fd == INVALID_HANDLE_VALUE )
+   {
+      CloseHandle( fd );
+      fd = INVALID_HANDLE_VALUE;
+   }
 
    if( SetCommMask( fd, 0) )
    {
@@ -52,12 +58,9 @@ ser_fd_t ser_open( const char *devname, int baud )
          }
       }
    }
-   if( fd != INVALID_HANDLE_VALUE )
-   {
-      CloseHandle( fd );
-      fd = INVALID_HANDLE_VALUE;
-   }
-   return fd;
+
+   CloseHandle( fd );
+   fd = INVALID_HANDLE_VALUE;
 }
 
 
