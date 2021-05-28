@@ -44,15 +44,10 @@ static ssize_t readhex( ser_fd_t serfd, unsigned char *buffer, ssize_t size )
 
    while( readsize < size )
    {
-      printf( "\n-mark1" );
-      printf( "\n%04X", (int)readsize );
+      printf( "\r%04X", (int)readsize );
       fflush( stdout );
-      printf( "\n-mark2" );
-      
-      ssize_t waa = ser_read( serfd, &tmp[0], 2 );
-      printf( "\n-mark3 waa=%zx",waa );
 
-      switch( waa )
+      switch( ser_read( serfd, &tmp[0], 2 ) )
       {
          case 0: /* eof */
             return readsize;
@@ -66,7 +61,7 @@ static ssize_t readhex( ser_fd_t serfd, unsigned char *buffer, ssize_t size )
             exiterror( "read error", 2 );
       }
    }
-   printf( "\n" );
+   printf( "\r\n" );
    return readsize;
 }
 
@@ -76,7 +71,7 @@ void poke( ser_fd_t serfd, int address, int value )
    int retval;
    char sendbuffer[16];
    snprintf( sendbuffer, sizeof(sendbuffer)-1,
-             "W%04X %02X\n", address & 0xFFFF, value & 0xFF );
+             "W%04X %02X\r\n", address & 0xFFFF, value & 0xFF );
    retval = ser_write( serfd, sendbuffer, strlen(sendbuffer) );
    if( retval < 0 )
    {
@@ -90,7 +85,7 @@ int peek( ser_fd_t serfd, int address )
    int retval;
    char sendbuffer[16];
    snprintf( sendbuffer, sizeof(sendbuffer)-1,
-             "R%04X\n", address & 0xFFFF );
+             "R%04X\r\n", address & 0xFFFF );
    retval = ser_write( serfd, sendbuffer, strlen(sendbuffer) );
    if( retval < 0 )
    {
@@ -112,7 +107,7 @@ void dump( ser_fd_t serfd, unsigned char *buffer, int start, int size )
    char sendbuffer[16];
 
    snprintf( sendbuffer, sizeof(sendbuffer)-1,
-             "D%04X %04X\n", start  & 0xFFFF, size & 0xFFFF );
+             "D%04X %04X\r\n", start  & 0xFFFF, size & 0xFFFF );
    retval = ser_write( serfd, sendbuffer, strlen(sendbuffer) );
    if( retval < 0 )
    {
@@ -160,7 +155,7 @@ int main( int argc, char *argv[] )
       return 2;
    }
 
-   serfd = ser_open( argv[1], 38400  ); //
+   serfd = ser_open( argv[1], 38400 );
    outfd = open( argv[3], FILE_OPEN_FLAGS, 0666 );
    if( outfd < 0 )
    {
@@ -169,7 +164,7 @@ int main( int argc, char *argv[] )
    }
 
    dumper( serfd, outfd );
-   //peek( serfd, 0x1000 ); /* hack: turn off led on Teensy++ 2.0 */
+   peek( serfd, 0x1000 ); /* hack: turn off led on Teensy++ 2.0 */
 
    ser_close( serfd );
    close( outfd );
