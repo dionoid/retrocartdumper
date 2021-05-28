@@ -155,7 +155,7 @@ int main( int argc, char *argv[] )
       return 2;
    }
 
-   serfd = ser_open( argv[1], 38400 );
+   serfd = ser_open( argv[1], 9600 ); //38400
    outfd = open( argv[3], FILE_OPEN_FLAGS, 0666 );
    if( outfd < 0 )
    {
